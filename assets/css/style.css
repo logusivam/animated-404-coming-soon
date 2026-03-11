@@ -1,0 +1,59 @@
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+   body {
+       font-family: 'Inter', sans-serif;
+       min-height: 100vh;
+   }
+
+   /* Custom Keyframes for a more dramatic pulse effect */
+   @keyframes dramaticPulse {
+
+       0%,
+       100% {
+           opacity: 1;
+           transform: scale(1);
+           text-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+           /* Indigo-600 shadow */
+       }
+
+       50% {
+           opacity: 0.7;
+           transform: scale(1.05);
+           text-shadow: 0 0 25px rgba(129, 140, 248, 1);
+           /* Indigo-400 shadow */
+       }
+   }
+
+   /* Custom Utility Class for the main text animation */
+   .animate-dramatic-pulse {
+       animation: dramaticPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+   }
+
+   /* Custom style for the loading bar container */
+   .loading-bar-container {
+       height: 8px;
+       width: 80%;
+       /* Adjusted for responsiveness on mobile */
+       max-width: 400px;
+   }
+
+   /* Custom Keyframes for the stripe animation */
+   @keyframes moveStripes {
+       to {
+           background-position: 40px 0;
+       }
+   }
+
+   /* Custom Loading Bar Background */
+   .loading-bar-active {
+       animation: moveStripes 0.8s linear infinite;
+       background-image: linear-gradient(-45deg,
+               rgba(255, 255, 255, 0.2) 25%,
+               transparent 25%,
+               transparent 50%,
+               rgba(255, 255, 255, 0.2) 50%,
+               rgba(255, 255, 255, 0.2) 75%,
+               transparent 75%,
+               transparent);
+       background-size: 40px 40px;
+   }
