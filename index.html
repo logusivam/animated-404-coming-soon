@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Application Loading</title>
+    <!-- 
+        Tailwind requires the JIT script to process custom classes and styles in this single-file setup.
+        We've included the recommended script below, which dynamically creates the styles. 
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Custom Keyframes for a more dramatic pulse effect */
+        @keyframes dramaticPulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                text-shadow: 0 0 10px rgba(79, 70, 229, 0.5); /* Indigo-600 shadow */
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+                text-shadow: 0 0 25px rgba(129, 140, 248, 1); /* Indigo-400 shadow */
+            }
+        }
+
+        /* Custom Utility Class for the main text animation */
+        .animate-dramatic-pulse {
+            animation: dramaticPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Custom style for the loading bar container */
+        .loading-bar-container {
+            height: 8px;
+            width: 80%; /* Adjusted for responsiveness on mobile */
+            max-width: 400px;
+        }
+
+        /* Custom Keyframes for the stripe animation */
+        @keyframes moveStripes {
+            to {
+                background-position: 40px 0;
+            }
+        }
+        
+        /* Custom Loading Bar Background */
+        .loading-bar-active {
+            animation: moveStripes 0.8s linear infinite;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, 0.2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.2) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center">
+
+    <div id="content-container" class="text-center p-8 m-4 max-w-lg w-full bg-gray-800 rounded-xl shadow-2xl transition-all duration-500">
+        
+        <div id="loading-view">
+            <!-- Main Animated 404 Title -->
+            <h1 class="text-8xl md:text-9xl font-extrabold text-indigo-500 mb-4 animate-dramatic-pulse">
+                404
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-xl md:text-2xl font-semibold mb-8 text-gray-300">
+                Application Endpoint Not Found
+            </p>
+
+            <!-- Loading Message -->
+            <div class="mb-8">
+                <p class="text-indigo-300 text-lg mb-4" id="loading-text">
+                    Initializing application core...
+                </p>
+                
+                <!-- Loading Bar -->
+                <div class="loading-bar-container mx-auto bg-gray-700 rounded-full overflow-hidden">
+                    <div id="progress-bar" 
+                         class="loading-bar-active h-full bg-indigo-500 transition-all duration-100 ease-linear rounded-full" 
+                         style="width: 0%;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coming Soon CTA -->
+            <p class="text-sm text-gray-500 italic">
+                We're currently deploying the full application. Please wait a moment!
+            </p>
+        </div>
+
+        <!-- Developer View (Appears after "loading" is complete) -->
+        <div id="developer-view" class="hidden p-6 bg-gray-700/50 border-2 border-indigo-400 rounded-lg">
+            <!-- SVG Icon for Developer/Laptop -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-indigo-300 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+                <!-- Coding dots on screen -->
+                <line x1="6" y1="13" x2="6" y2="13.01"></line>
+                <line x1="10" y1="13" x2="10" y2="13.01"></line>
+                <line x1="14" y1="13" x2="14" y2="13.01"></line>
+                <line x1="18" y1="13" x2="18" y2="13.01"></line>
+                <!-- Simple code block -->
+                <polyline points="9 9 12 6 15 9"></polyline>
+                <line x1="12" y1="6" x2="12" y2="11"></line>
+            </svg>
+             <p class="text-2xl font-bold text-white mb-2">Development in Progress...</p>
+             <p class="text-indigo-200 text-lg">Wait, will add the rest of the apps soon.</p>
+        </div>
+        
+    </div>
+
+    <script>
+        // --- Firebase Globals (Required to be defined but not used here) ---
+        // We define the required global variables here to prevent runtime errors,
+        // even though this specific app does not use Firestore or Authentication.
+        const __app_id = '404-loading-page';
+        const __firebase_config = '{}'; 
+        const __initial_auth_token = undefined;
+        // -------------------------------------------------------------------
+
+        const progressBar = document.getElementById('progress-bar');
+        const loadingText = document.getElementById('loading-text');
+        const loadingView = document.getElementById('loading-view');
+        // Renamed variable to match the new content
+        const developerView = document.getElementById('developer-view'); 
+        
+        let progress = 0;
+        const messages = [
+            "Initializing application core...",
+            "Validating system dependencies...",
+            "Fetching latest configuration...",
+            "Establishing connection to server...",
+            "Almost there! Just a few more checks...",
+            "Application deployment complete."
+        ];
+        
+        /**
+         * Simulates a dynamic loading process with increasing speed
+         */
+        function startLoadingSimulation() {
+            const interval = 100; // Base interval in ms
+            let step = 1;
+
+            const loadingLoop = setInterval(() => {
+                // Increase speed slightly after 50% for a less linear feel
+                step = progress < 50 ? 1 : 0.5 + (100 - progress) / 50; 
+                progress = Math.min(100, progress + step);
+                
+                progressBar.style.width = progress + '%';
+
+                // Update text based on progress milestones
+                if (progress >= 10 && progress < 30) {
+                    loadingText.textContent = messages[1];
+                } else if (progress >= 30 && progress < 60) {
+                    loadingText.textContent = messages[2];
+                } else if (progress >= 60 && progress < 85) {
+                    loadingText.textContent = messages[3];
+                } else if (progress >= 85 && progress < 100) {
+                    loadingText.textContent = messages[4];
+                } else if (progress >= 100) {
+                    loadingText.textContent = messages[5];
+                    clearInterval(loadingLoop);
+                    onLoadingComplete();
+                }
+            }, interval);
+        }
+
+        /**
+         * Handles the final state once the simulation is complete, transitioning to the developer view.
+         */
+        function onLoadingComplete() {
+            // Wait a moment for the user to read the final status
+            setTimeout(() => {
+                // Hide the main loading progress view
+                loadingView.classList.add('hidden');
+                
+                // Show the developer view
+                developerView.classList.remove('hidden');
+                
+                // Remove the pulsing animation from the container for a clean look
+                document.getElementById('content-container').classList.remove('animate-pulse');
+            }, 500);
+        }
+
+        // Start the simulation when the window loads
+        window.onload = startLoadingSimulation;
+
+    </script>
+</body>
+</html>
